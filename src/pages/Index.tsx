@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import SimulationQuiz from "@/components/SimulationQuiz";
+import ClinicalCaseDB from "@/components/ClinicalCaseDB";
 
 type IconName = string & { _iconBrand?: never };
 
@@ -119,6 +120,7 @@ export default function Index() {
   const [activeSection, setActiveSection] = useState<Section>("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeQuiz, setActiveQuiz] = useState<number | null>(null);
+  const [showCaseDB, setShowCaseDB] = useState(false);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden font-body">
@@ -291,7 +293,7 @@ export default function Index() {
                       Начать симуляцию
                     </button>
                     <button
-                      onClick={() => setActiveSection("cases")}
+                      onClick={() => setShowCaseDB(true)}
                       className="px-5 py-2.5 rounded-xl text-sm font-medium text-white/80 border border-white/20 hover:bg-white/10 transition-all"
                     >
                       Клинические случаи
@@ -494,7 +496,14 @@ export default function Index() {
                     </button>
                   ))}
                 </div>
-                <div className="ml-auto text-sm text-muted-foreground">4 случая</div>
+                <button
+                  onClick={() => setShowCaseDB(true)}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
+                  style={{ background: "hsl(var(--emerald))" }}
+                >
+                  <Icon name="Database" size={13} />
+                  База случаев (8)
+                </button>
               </div>
 
               <div className="space-y-3">
@@ -524,6 +533,7 @@ export default function Index() {
                             <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-muted font-medium">{tag}</span>
                           ))}
                           <button
+                            onClick={() => setShowCaseDB(true)}
                             className="ml-auto px-4 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
                             style={{ background: c.completed ? "hsl(var(--secondary))" : "hsl(var(--primary))" }}
                           >
@@ -625,6 +635,10 @@ export default function Index() {
 
       {activeQuiz !== null && (
         <SimulationQuiz simId={activeQuiz} onClose={() => setActiveQuiz(null)} />
+      )}
+
+      {showCaseDB && (
+        <ClinicalCaseDB onClose={() => setShowCaseDB(false)} />
       )}
     </div>
   );
