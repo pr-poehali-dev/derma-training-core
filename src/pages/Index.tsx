@@ -366,7 +366,7 @@ export default function Index() {
                     }}
                   >
                     <Icon name="Sparkles" size={12} />
-                    DermaMed Trainer v1.0
+                    DermaMed Trainer
                   </div>
                   <h2 className="font-display font-bold text-3xl text-white mb-2">
                     Профессиональная диагностика<br />начинается здесь

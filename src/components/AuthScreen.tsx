@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
-import { useAuth, DEMO_USERS, UserRole } from "@/context/AuthContext";
+import { useAuth, SYSTEM_USERS, UserRole } from "@/context/AuthContext";
 
 const ROLE_COLORS: Record<UserRole, { bg: string; text: string; border: string; badge: string }> = {
   resident: {
@@ -42,10 +42,14 @@ export default function AuthScreen() {
       setError("Выберите учётную запись");
       return;
     }
+    if (!password.trim()) {
+      setError("Введите пароль");
+      return;
+    }
     setLoading(true);
     setError("");
     setTimeout(() => {
-      const ok = login(selectedUser, password || "demo");
+      const ok = login(selectedUser, password);
       if (!ok) {
         setError("Неверный пароль");
         setLoading(false);
@@ -87,12 +91,12 @@ export default function AuthScreen() {
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="p-6 border-b border-border">
-            <h2 className="font-display font-bold text-lg text-foreground mb-1">Выберите учётную запись</h2>
-            <p className="text-muted-foreground text-xs">Демо-версия: пароль не требуется</p>
+            <h2 className="font-display font-bold text-lg text-foreground mb-1">Вход в систему</h2>
+            <p className="text-muted-foreground text-xs">Выберите учётную запись и введите пароль</p>
           </div>
 
           <div className="p-4 space-y-2">
-            {DEMO_USERS.map((u) => {
+            {SYSTEM_USERS.map((u) => {
               const colors = ROLE_COLORS[u.role];
               const isSelected = selectedUser === u.id;
               return (
@@ -149,7 +153,7 @@ export default function AuthScreen() {
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError(""); }}
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                placeholder="Пароль (для демо — любой)"
+                placeholder="Введите пароль"
                 className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-muted/30 text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
               <button
@@ -191,7 +195,7 @@ export default function AuthScreen() {
 
           <div className="px-6 pb-5 text-center">
             <p className="text-xs text-muted-foreground">
-              Демонстрационная версия DermaMed Trainer v1.0
+              DermaMed Trainer · Кафедра дерматовенерологии
             </p>
           </div>
         </div>

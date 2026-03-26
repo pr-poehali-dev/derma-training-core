@@ -18,7 +18,11 @@ export interface User {
   };
 }
 
-export const DEMO_USERS: User[] = [
+interface UserWithPassword extends User {
+  password: string;
+}
+
+const USERS: UserWithPassword[] = [
   {
     id: 1,
     name: "Иванов Алексей Петрович",
@@ -27,6 +31,7 @@ export const DEMO_USERS: User[] = [
     roleLabel: "Ординатор",
     department: "Кафедра дерматологии",
     email: "ivanov@dermamed.ru",
+    password: "resident123",
     stats: { cases: 27, score: 91, hours: 48, rank: "#3" },
   },
   {
@@ -37,6 +42,7 @@ export const DEMO_USERS: User[] = [
     roleLabel: "Врач-дерматолог",
     department: "Дерматологическое отделение",
     email: "smirnova@dermamed.ru",
+    password: "doctor123",
     stats: { cases: 84, score: 97, hours: 210, rank: "#1" },
   },
   {
@@ -47,9 +53,12 @@ export const DEMO_USERS: User[] = [
     roleLabel: "Преподаватель",
     department: "Учебный отдел",
     email: "petrov@dermamed.ru",
+    password: "admin123",
     stats: { cases: 112, score: 99, hours: 380, rank: "Эксперт" },
   },
 ];
+
+export const SYSTEM_USERS: User[] = USERS.map(({ password: _, ...u }) => u);
 
 interface AuthContextValue {
   user: User | null;
@@ -63,10 +72,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   function login(userId: number, password: string): boolean {
-    if (password.length < 3) return false;
-    const found = DEMO_USERS.find((u) => u.id === userId);
+    const found = USERS.find((u) => u.id === userId && u.password === password);
     if (!found) return false;
-    setUser(found);
+    const { password: _, ...safeUser } = found;
+    setUser(safeUser);
     return true;
   }
 
