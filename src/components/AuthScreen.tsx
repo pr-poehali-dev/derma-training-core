@@ -86,6 +86,7 @@ export default function AuthScreen() {
           </div>
           <h1 className="font-display font-bold text-3xl text-white mb-1">DermaMed Trainer</h1>
           <p className="text-white/50 text-sm">Система симуляционного обучения дерматологии</p>
+          <p className="text-white/35 text-xs mt-1">по методу М.А. Мурашко, Н.В. Вейман, А.Е. Яблокова, А.В. Грибанова</p>
         </div>
 
         {/* Card */}
