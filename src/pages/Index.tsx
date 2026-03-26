@@ -69,36 +69,14 @@ const clinicalCases = [
 ];
 
 const simulations = [
-  {
-    id: 1,
-    title: "Диагностика псориаза",
-    description: "Отработка навыков распознавания псориатических бляшек и дифференциальной диагностики",
-    duration: "20 мин",
-    steps: 8,
-    icon: "Microscope",
-    color: "from-blue-600 to-blue-700",
-    level: "Базовый",
-  },
-  {
-    id: 2,
-    title: "Онкодерматология",
-    description: "Оценка пигментных образований по системе ABCDE. Раннее выявление меланомы",
-    duration: "35 мин",
-    steps: 12,
-    icon: "Search",
-    color: "from-emerald-600 to-teal-700",
-    level: "Продвинутый",
-  },
-  {
-    id: 3,
-    title: "Инфекционные дерматозы",
-    description: "Распознавание бактериальных, грибковых и вирусных поражений кожи",
-    duration: "25 мин",
-    steps: 10,
-    icon: "Shield",
-    color: "from-indigo-600 to-blue-700",
-    level: "Средний",
-  },
+  { id: 1, title: "Диагностика псориаза", description: "Распознавание псориатических бляшек, триада Ауспитца, оценка PASI", duration: "15 мин", steps: 5, icon: "Microscope", color: "from-blue-600 to-blue-700", level: "Базовый" },
+  { id: 2, title: "Онкодерматология", description: "Оценка пигментных образований по ABCDE, дерматоскопия, стадирование меланомы", duration: "15 мин", steps: 5, icon: "Search", color: "from-emerald-600 to-teal-700", level: "Продвинутый" },
+  { id: 3, title: "Инфекционные дерматозы", description: "Диагностика и лечение рецидивирующего герпеса, супрессивная терапия", duration: "15 мин", steps: 5, icon: "Shield", color: "from-indigo-600 to-blue-700", level: "Средний" },
+  { id: 4, title: "Атопический дерматит", description: "Критерии диагностики АтД, оценка SCORAD, биологическая терапия", duration: "15 мин", steps: 5, icon: "Flame", color: "from-orange-600 to-amber-700", level: "Средний" },
+  { id: 5, title: "Сифилис", description: "Первичный сифилис: клиника, серодиагностика, лечение пенициллином", duration: "15 мин", steps: 5, icon: "AlertTriangle", color: "from-rose-600 to-red-700", level: "Продвинутый" },
+  { id: 6, title: "Акне", description: "Классификация акне, шкала IGA, комбинированная терапия, изотретиноин", duration: "15 мин", steps: 5, icon: "Droplets", color: "from-sky-600 to-blue-700", level: "Базовый" },
+  { id: 7, title: "Острая крапивница", description: "Дифференциальная диагностика волдырей, ангиоотёк, уртикарный васкулит", duration: "15 мин", steps: 5, icon: "Zap", color: "from-pink-600 to-rose-700", level: "Средний" },
+  { id: 8, title: "Микозы кожи", description: "Дерматофитии, микроскопия с KOH, лампа Вуда, антимикотическая терапия", duration: "15 мин", steps: 5, icon: "Bug", color: "from-lime-600 to-green-700", level: "Базовый" },
 ];
 
 const analyticsData = [
