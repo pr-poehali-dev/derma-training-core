@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
+import SimulationQuiz from "@/components/SimulationQuiz";
 
 type IconName = string & { _iconBrand?: never };
 
@@ -117,6 +118,7 @@ const skillsData = [
 export default function Index() {
   const [activeSection, setActiveSection] = useState<Section>("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeQuiz, setActiveQuiz] = useState<number | null>(null);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden font-body">
@@ -282,7 +284,7 @@ export default function Index() {
                   </p>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => setActiveSection("simulations")}
+                      onClick={() => setActiveQuiz(1)}
                       className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
                       style={{ background: "hsl(var(--emerald))" }}
                     >
@@ -391,6 +393,7 @@ export default function Index() {
                           {sim.duration}
                         </span>
                         <button
+                          onClick={() => setActiveQuiz(sim.id)}
                           className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
                           style={{ background: "hsl(var(--primary))" }}
                         >
@@ -619,6 +622,10 @@ export default function Index() {
           )}
         </div>
       </main>
+
+      {activeQuiz !== null && (
+        <SimulationQuiz simId={activeQuiz} onClose={() => setActiveQuiz(null)} />
+      )}
     </div>
   );
 }
