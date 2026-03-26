@@ -2,6 +2,8 @@ import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import SimulationQuiz from "@/components/SimulationQuiz";
 import ClinicalCaseDB from "@/components/ClinicalCaseDB";
+import AuthScreen from "@/components/AuthScreen";
+import { useAuth, UserRole } from "@/context/AuthContext";
 
 type IconName = string & { _iconBrand?: never };
 
@@ -116,11 +118,27 @@ const skillsData = [
   { name: "Дерматоскопия", value: 58, color: "bg-violet-500" },
 ];
 
+const ROLE_COLORS: Record<UserRole, string> = {
+  resident: "hsl(214 72% 50%)",
+  doctor: "hsl(160 55% 40%)",
+  admin: "hsl(270 55% 55%)",
+};
+
+const ROLE_ICONS: Record<UserRole, string> = {
+  resident: "GraduationCap",
+  doctor: "Stethoscope",
+  admin: "ShieldCheck",
+};
+
 export default function Index() {
+  const { user, logout } = useAuth();
   const [activeSection, setActiveSection] = useState<Section>("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeQuiz, setActiveQuiz] = useState<number | null>(null);
   const [showCaseDB, setShowCaseDB] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  if (!user) return <AuthScreen />;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden font-body">
@@ -189,21 +207,79 @@ export default function Index() {
         </nav>
 
         {/* User */}
-        <div className="p-3 border-t border-white/10">
-          <div className="flex items-center gap-3">
+        <div className="p-3 border-t border-white/10 relative">
+          <button
+            onClick={() => setShowUserMenu((v) => !v)}
+            className="w-full flex items-center gap-3 rounded-xl p-1 hover:bg-white/5 transition-colors"
+          >
             <div
               className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-white"
-              style={{ background: "hsl(var(--emerald))" }}
+              style={{ background: ROLE_COLORS[user.role] }}
             >
-              АИ
+              {user.initials}
             </div>
             {sidebarOpen && (
-              <div className="animate-fade-in overflow-hidden">
-                <div className="text-white text-xs font-medium truncate">Иванов А.П.</div>
-                <div className="text-white/40 text-xs">Ординатор</div>
+              <div className="animate-fade-in overflow-hidden flex-1 text-left">
+                <div className="text-white text-xs font-medium truncate">
+                  {user.name.split(" ").slice(0, 2).join(" ")}
+                </div>
+                <div className="text-white/40 text-xs flex items-center gap-1">
+                  <Icon name={ROLE_ICONS[user.role] as string} size={9} />
+                  {user.roleLabel}
+                </div>
               </div>
             )}
-          </div>
+            {sidebarOpen && (
+              <Icon name="ChevronUp" size={13} className={`text-white/40 transition-transform ${showUserMenu ? "" : "rotate-180"}`} />
+            )}
+          </button>
+
+          {/* User menu popup */}
+          {showUserMenu && sidebarOpen && (
+            <div className="absolute bottom-full left-3 right-3 mb-2 bg-white rounded-2xl shadow-2xl border border-border overflow-hidden animate-slide-up">
+              {/* Profile header */}
+              <div className="p-4 border-b border-border">
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
+                    style={{ background: ROLE_COLORS[user.role] }}
+                  >
+                    {user.initials}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm text-foreground leading-tight">{user.name}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="bg-muted/50 rounded-lg p-2">
+                    <div className="font-bold text-sm text-primary">{user.stats.cases}</div>
+                    <div className="text-xs text-muted-foreground">случаев</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-2">
+                    <div className="font-bold text-sm text-emerald-600">{user.stats.score}%</div>
+                    <div className="text-xs text-muted-foreground">балл</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-2">
+                    <div className="font-bold text-sm text-amber-600">{user.stats.rank}</div>
+                    <div className="text-xs text-muted-foreground">рейтинг</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Switch account */}
+              <div className="p-2">
+                <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Сменить учётную запись</div>
+                <button
+                  onClick={() => { setShowUserMenu(false); logout(); }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition-colors font-medium"
+                >
+                  <Icon name="LogOut" size={14} />
+                  Выйти из аккаунта
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Toggle */}
@@ -221,7 +297,7 @@ export default function Index() {
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-border">
           <div>
             <h1 className="font-display font-bold text-xl text-foreground">
-              {activeSection === "home" && "Добро пожаловать"}
+              {activeSection === "home" && `Добро пожаловать, ${user.name.split(" ")[1]}!`}
               {activeSection === "simulations" && "Симуляции"}
               {activeSection === "reference" && "Справочник заболеваний"}
               {activeSection === "cases" && "Клинические случаи"}
@@ -236,6 +312,14 @@ export default function Index() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {/* Role badge */}
+            <div
+              className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 text-white"
+              style={{ background: ROLE_COLORS[user.role] }}
+            >
+              <Icon name={ROLE_ICONS[user.role] as IconName} size={11} />
+              {user.roleLabel}
+            </div>
             <div
               className="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
               style={{ background: "hsl(var(--emerald) / 0.12)", color: "hsl(var(--emerald))" }}
@@ -245,6 +329,13 @@ export default function Index() {
             </div>
             <button className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/70 transition-colors">
               <Icon name="Bell" size={16} className="text-muted-foreground" />
+            </button>
+            <button
+              onClick={logout}
+              className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors"
+              title="Выйти"
+            >
+              <Icon name="LogOut" size={15} className="text-muted-foreground" />
             </button>
           </div>
         </header>
@@ -305,10 +396,10 @@ export default function Index() {
               {/* Stats */}
               <div className="grid grid-cols-4 gap-4">
                 {[
-                  { label: "Завершено случаев", value: "27", icon: "CheckCircle2", change: "+5 за месяц", color: "text-emerald-600" },
-                  { label: "Средний балл", value: "91%", icon: "TrendingUp", change: "+6% за месяц", color: "text-blue-600" },
-                  { label: "Часов обучения", value: "48", icon: "Clock", change: "12 ч за неделю", color: "text-indigo-600" },
-                  { label: "Рейтинг группы", value: "#3", icon: "Award", change: "Топ 15%", color: "text-amber-600" },
+                  { label: "Завершено случаев", value: String(user.stats.cases), icon: "CheckCircle2", change: "+5 за месяц", color: "text-emerald-600" },
+                  { label: "Средний балл", value: `${user.stats.score}%`, icon: "TrendingUp", change: "+6% за месяц", color: "text-blue-600" },
+                  { label: "Часов обучения", value: String(user.stats.hours), icon: "Clock", change: "12 ч за неделю", color: "text-indigo-600" },
+                  { label: "Рейтинг группы", value: user.stats.rank, icon: "Award", change: "Топ 15%", color: "text-amber-600" },
                 ].map((stat, i) => (
                   <div key={i} className="bg-white rounded-xl p-4 border border-border card-hover">
                     <div className="flex items-start justify-between mb-3">
