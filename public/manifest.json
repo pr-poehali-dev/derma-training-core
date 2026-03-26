@@ -1,0 +1,24 @@
+{
+  "name": "DermaMed Trainer",
+  "short_name": "DermaMed",
+  "description": "Система симуляционного обучения дерматологии по методу М.А. Мурашко, Н.В. Вейман, А.Е. Яблокова, А.В. Грибанова",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.poehali.dev/projects/9982321f-8751-47b1-b26e-aa1e66e83fc7/files/7c4ca0c2-0a0b-4c8f-891f-877a2a063ae5.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
